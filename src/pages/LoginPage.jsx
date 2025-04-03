@@ -34,7 +34,7 @@ const LoginPage = () => {
         }
 
         loginContext(userData); // Update context for user data
-        navigate("/HomePage"); // Redirect to homepage after login, will optimize it to previous page afterward
+        navigate("/"); // Redirect to homepage after login, will optimize it to previous page afterward
       } catch (error) {
         alert(error.message); 
       }
