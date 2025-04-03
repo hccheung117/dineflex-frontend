@@ -40,7 +40,7 @@ const RegisterPage = () => {
       try {
         const userData = await register(values.username, values.email, values.password);
         login(userData); // Auto login after registration
-        setSuccessMessage("Registration successful! Please log in to your account.");
+        setSuccessMessage("Registration successful! Redirecting to log in page...");
         setTimeout(() => navigate("/login"), 3000); // Redirect  to login page after registration
       } catch (error) {
         alert(error.message); // Feedback for error msg
