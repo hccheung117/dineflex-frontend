@@ -14,7 +14,7 @@ const RegisterPage = () => {
   // Formik for form management
   const formik = useFormik({
     initialValues: {
-      name: "",
+      username: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -38,7 +38,7 @@ const RegisterPage = () => {
 
     onSubmit: async (values) => {
       try {
-        const userData = await register(values.name, values.email, values.password);
+        const userData = await register(values.username, values.email, values.password);
         login(userData); // Auto login after registration
         setSuccessMessage("Registration successful! Please log in to your account.");
         setTimeout(() => navigate("/login"), 3000); // Redirect  to login page after registration
