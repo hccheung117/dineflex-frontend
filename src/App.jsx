@@ -8,6 +8,7 @@ import RestaurantPage from './pages/RestaurantPage';
 import BookingPage from './pages/BookingPage';
 import BookingHistoryPage from './pages/BookingHistoryPage';
 import BookingConfirmationPage from './pages/BookingConfirmationPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function MainApp() {
       <Route path="/booking" element={<BookingPage />} />
       <Route path="/booking-history" element={<BookingHistoryPage />} />
       <Route path="/booking-confirmation" element={<BookingConfirmationPage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
