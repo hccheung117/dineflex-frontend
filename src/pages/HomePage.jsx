@@ -119,16 +119,16 @@ const fakeRestaurants = [
 ];
 
 const HomePage = () => {
-  const { user } = useAuth(); // 获取用户信息
+  const { user } = useAuth(); // Get user info
   const navigate = useNavigate();
-  const [restaurants, setRestaurants] = useState(fakeRestaurants); // 使用模拟的餐厅数据
-  const [loading, setLoading] = useState(false); // 加载状态
-  const [currentPage, setCurrentPage] = useState(1); // 当前页数
-  const restaurantsPerPage = 8; // 每页显示的餐厅数量
+  const [restaurants, setRestaurants] = useState(fakeRestaurants); // Mock restaurant info
+  const [loading, setLoading] = useState(false); // Load state
+  const [currentPage, setCurrentPage] = useState(1); // Pagination
+  const restaurantsPerPage = 8; 
 
   useEffect(() => {
     if (!user) {
-      navigate('/login'); // 未登录时重定向到登录页
+      navigate('/login'); 
     }
   }, [user, navigate]);
 
@@ -143,7 +143,11 @@ const HomePage = () => {
   // Render cards
   const renderRestaurantCards = () => {
     if (loading) {
-      return <div className="text-center py-4">Loading...</div>;
+      return (
+        <div className="text-center py-4">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mx-auto"></div>
+        </div>
+      );
     }
 
     return (
@@ -199,12 +203,12 @@ const HomePage = () => {
 
       {/* Pagination */}
       <div className="flex justify-center mt-6">
-        <nav className="inline-flex items-center">
+        <nav className="inline-flex items-center space-x-2">
           {/* Previous Button */}
           {currentPage > 1 && (
             <button
               onClick={() => paginate(currentPage - 1)}
-              className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-l-md"
+              className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-l-md hover:bg-gray-200"
             >
               Previous
             </button>
@@ -219,7 +223,7 @@ const HomePage = () => {
           {indexOfLastRestaurant < restaurants.length && (
             <button
               onClick={() => paginate(currentPage + 1)}
-              className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-r-md"
+              className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-r-md hover:bg-gray-200"
             >
               Next
             </button>
