@@ -1,11 +1,13 @@
-// src/pages/RestaurantPage.jsx
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { FaPhoneAlt, FaMapMarkerAlt } from "react-icons/fa"; // Import icons
 import Modal from "react-modal"; // Import Modal component
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"; // Import Leaflet components
-import L from "leaflet"; // Import Leaflet
+import DatePicker from "react-datepicker"; // Import date picker
+import Select from "react-select"; // Import React Select
+import "react-datepicker/dist/react-datepicker.css"; // Import date picker styles
 import "leaflet/dist/leaflet.css"; // Import Leaflet styles
+
 
 // Mock data for restaurant details
 const fakeRestaurantDetails = {
@@ -32,6 +34,22 @@ const fakeRestaurantDetails = {
     { day: "Saturday", hours: "10:00 AM - 11:00 PM" },
     { day: "Sunday", hours: "10:00 AM - 9:00 PM" },
   ],
+  availableTimes: {
+    "2025-04-06": [
+      { time: "15:00", offer: "30% OFF" },
+      { time: "15:30", offer: "30% OFF" },
+      { time: "16:00", offer: "30% OFF" },
+      { time: "16:30", offer: "30% OFF" },
+      { time: "17:00", offer: "30% OFF" },
+      { time: "17:30", offer: "30% OFF" },
+    ],
+    "2025-04-07": [
+      { time: "15:00", offer: "20% OFF" },
+      { time: "15:30", offer: "20% OFF" },
+      { time: "16:00", offer: "20% OFF" },
+      { time: "16:30", offer: "20% OFF" },
+    ],
+  }, // Sample available times with discounts
 };
 
 Modal.setAppElement("#root"); // This is needed for accessibility
@@ -42,6 +60,9 @@ const RestaurantPage = () => {
   const [loading, setLoading] = useState(true); // Loading state
   const [modalIsOpen, setModalIsOpen] = useState(false); // Modal visibility state
   const [selectedImage, setSelectedImage] = useState(null); // Store the image selected for the modal
+  const [selectedDate, setSelectedDate] = useState(null); // Selected date for booking
+  const [partySize, setPartySize] = useState(2); // Number of diners
+  const [availableTimes, setAvailableTimes] = useState([]); // Available times based on selected date
 
   // Simulate fetching restaurant details using mock data
   useEffect(() => {
@@ -50,6 +71,13 @@ const RestaurantPage = () => {
       setLoading(false); // Set loading to false after fetching
     }, 1000); // Simulating an API delay of 1 second
   }, [id]);
+
+  useEffect(() => {
+    if (selectedDate) {
+      const dateStr = selectedDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+      setAvailableTimes(restaurant.availableTimes[dateStr] || []);
+    }
+  }, [selectedDate, restaurant]);
 
   // Function to open the modal and set the selected image
   const openModal = (image) => {
@@ -81,7 +109,11 @@ const RestaurantPage = () => {
         <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">{restaurant.name}</h1>
 
         {/* Restaurant Description */}
-        <p className="text-lg text-gray-700 mb-6">{restaurant.description}</p>
+        <div className="mb-6">
+          <h3 className="text-2xl font-semibold mb-4 text-gray-800">Overview</h3>
+          <p className="text-lg text-gray-700 mb-6">{restaurant.description}</p>
+        </div>
+        
 
         {/* Restaurant Image Gallery */}
         <div className="mb-6">
@@ -145,6 +177,60 @@ const RestaurantPage = () => {
               </Popup>
             </Marker>
           </MapContainer>
+        </div>
+
+        {/* Make a Booking Form */}
+        <div className="mb-6">
+          <h3 className="text-2xl font-semibold mb-4 text-gray-800">Make a Booking</h3>
+
+          {/* Number of Diners */}
+          <div className="mb-4">
+            <label htmlFor="partySize" className="block text-sm font-medium text-gray-700">Number of diners:</label>
+            <Select
+              options={[
+                { value: 1, label: "1 Person" },
+                { value: 2, label: "2 People" },
+                { value: 3, label: "3 People" },
+                { value: 4, label: "4 People" },
+                { value: 5, label: "5 People" },
+                { value: 6, label: "6 People" },
+              ]}
+              value={{ value: partySize, label: `${partySize} People` }}
+              onChange={(e) => setPartySize(e.value)}
+              className="mt-2"
+            />
+          </div>
+
+          {/* Date Picker */}
+          <div className="mb-4">
+            <label htmlFor="date" className="block text-sm font-medium text-gray-700">Select a date:</label>
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+              dateFormat="yyyy-MM-dd"
+              minDate={new Date()}
+              className="mt-2 p-2 border border-gray-300 rounded-md w-full"
+            />
+          </div>
+
+          {/* Time Slots */}
+          {selectedDate && availableTimes.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold text-gray-800">Select a time</h3>
+              <div className="grid grid-cols-3 gap-4 mt-4">
+                {availableTimes.map((slot, index) => (
+                  <button
+                    key={index}
+                    className="bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-600"
+                    onClick={() => alert(`Booking time: ${slot.time}`)}
+                  >
+                    {slot.time} <br />
+                    <span className="text-sm">{slot.offer}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Booking Button */}
